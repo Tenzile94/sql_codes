@@ -1,0 +1,83 @@
+--1)Id pk elan olunmalidir
+ 
+CREATE TABLE teacher(Id int,
+                     Name varchar(255),
+                     Salary int,
+                     Dept varchar(255)
+                       );
+ 
+ alter table teacher modify id primary key;
+insert into teacher values (1, 'A', 100, 'D1');
+insert into teacher values (2, 'B', 50, 'D5');
+insert into teacher values (3, 'C', 500, 'D3');
+insert into teacher values (4, 'D', 200, 'D7');
+insert into teacher values (5, 'E', 400, 'D1');
+ 
+ 
+--2)Asagidaki tableye instructor_id(teacher_id dir) ile foreign key  elaqesi qurulmalidir iki table arasinda
+ 
+CREATE TABLE subjects(Subject_Id varchar(50),
+                      Title varchar(255),
+                      Time varchar(255),
+                      Instructor_Id int);
+ 
+ alter table subjects modify instructor_id references teacher(id);
+ 
+insert into subjects values ('S1', 'Maths', 'Summer', 1);
+insert into subjects values ('S1', 'English', 'Winter', 2);
+insert into subjects values ('S1', 'Science', 'Summer', 3);
+insert into subjects values ('S1', 'Language', 'Spring', 5);
+ 
+
+ 
+--3) Title  ‘science’ olan muellimin id si ,adini ve maasini cekmek subquery vasitesile
+select id,name,salary from teacher t where t.id=
+(select s.instructor_id  from subjects s where title='Science');
+
+ select s.instructor_id  from subjects s where title='Science';
+
+--4)eyni sorgunu join vasitesile de etmek
+ select id,name, salary from teacher t
+ inner join subjects s on t.id=s.instructor_id where title ='Science';
+ 
+--5) time  ‘summer’ ve ‘winter’ olan muellimlerin sayini cekmek subquery vasitesile
+ select count(t.id) from teacher t where t.id in
+ (select s.instructor_id from subjects s where time in('Summer','Winter'));
+ 
+--6)eyni sorgunu join vasitesile de etmek
+select count(id) from teacher t 
+left join subjects s on t.id =s.instructor_id where time in('Summer','Winter');
+ 
+--7) Title  hissesinde icerisinde  ‘i’ herfi olan  olan muellimin adini ve maasini cekmek subquery vasitesile
+
+select name,salary from teacher t where t.id in
+(select s.instructor_id from subjects s where title like '%i%');
+ 
+--8)eyni sorgunu join vasitesile de etmek
+select name,salary from teacher t inner
+join  subjects s on t.id=s.instructor_id where title  like '%i%';
+ 
+--9)butun melimler tablesin cekmek o halda ki, titleler arasinda ‘Maths’ var
+select *  from teacher t where t.id  in
+(select s.instructor_id from subjects s where title='Maths');
+ 
+--10)All,any ve someni tetbiq edib 3 ferqli query yazmaq
+select * from teacher t where salary>
+some (select salary from teacher where salary>100);
+
+select * from teacher t where salary>
+all(select salary from teacher where salary>100);
+
+select * from teacher t where salary>
+some (select salary from teacher where salary>100);
+
+select * from teacher t where salary <>
+all(select salary from teacher where salary>100);
+
+
+select * from teacher;
+select * from subjects;
+
+
+
+

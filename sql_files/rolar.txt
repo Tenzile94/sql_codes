@@ -1,0 +1,91 @@
+create user Demo identified by Demo;
+--1) demo adli user yaratmaq-
+alter session set "_oracle_script"=true;
+create user Demo2 identified by demo;
+
+--2) sys ile create_usr_role adli role yaratmaq hemin rola 
+--table yaratmaq ,
+--create session,
+--ve DML privileges vermek
+create table tble(id number);
+create role usr_role;
+grant create table to usr_role;
+grant create session to usr_role;
+grant select,update,insert,delete on tble to usr_role;
+
+--synonymin her iki tipini yaratmaq privilegelerini vermek
+grant create synonym to usr_role;
+grant create public  synonym to usr_role;
+create synonym syn_1 for tble; 
+create public synonym syn_1 for tble;
+
+--3) Demo useri ile table db_titles (titles,id,description )adli table yaratmaq.
+--hemin tebale ucun eyni adli public ve private synonym yaratmaq
+create table db_titles(titles varchar2(29),
+                       id number,
+                       description varchar2(39));
+                       
+                       
+create synonym syn_tb for db_titles;
+create public synonym syn_tb for db_tables;
+
+--4) sys ile yeni bir role yaratmaq hemin role yeni yaranmis table uzerinde DML emeliyyatlari
+--privilegelerini ayri ayriliqda vermek
+alter session set "_oracle_script"=true;
+create role role_2;
+create table new_table(name varchar2(10));
+grant select on new_table to role_2;
+grant insert on new_table to role_2;
+grant delete on new_table to role_2;
+grant update on new_table to role_2; 
+
+--bundan elave hemin rola bu gunedek kecdiyimiz butun objectleri yaratmaq privilegesini ve drop
+--privilegesini vermek
+grant create table to role_2;
+grant create session to role_2;
+grant create synonym to role_2;
+grant create view to role_2;
+grant create sequence to role_2;
+
+--5)yeni yaranmis roleni ,yeni bir demo2 useri yaradaraq ona vermek
+alter session set "_oracle_script"=true;
+create user demo_3 identified by demo;
+grant role_2 to demo_3;
+
+--6) demo3 useri ile db_titlesin synonyminden istifade edib view yaratmaq ve hemin view uzerinde
+--public ve private synonym yaratmaq
+
+create view vw_1 as select * from syn_tb; 
+create view vw_2 as select * from Demo_2.syn_tb;--?
+ create synonym syn_w for vw_1;
+ create public synonym syn_w for vw_1;
+  
+----------------------------------------
+--------------
+--1) sys ile flowers(id) adli table yaradin
+create table flowers(id number);
+--1.2 flowers tablesi ucun Table_F adli synonym yaradin
+create synonym Table_F for flowers;
+create public synonym Table_F for flowers;
+
+--2) hemin tableye bir nece value insert edin
+insert into Table_F values(1);
+insert into Table_F values(2);
+insert into Table_F values(3);
+insert into Demo3.Table_F values(4);
+
+select*from Table_F;
+
+--3)ik ferqi user yaradin prg1 ve prg2
+alter session set "_oracle_script"=true;
+create user prg1 identified by prg;
+create user prg2 identified by prg;
+
+4) hemin iki usere sys ile girib
+grant select on sys.Table_F to prg1;
+grant select on sys.Table_F to prg2;
+ bu grantlari verin
+5) daha sonra her iki prg1 ve prg2 userleri ile db-e connect olub ardicilliala
+select * from sys.prg1;
+ yuxaridaki sorgunu her iki userden execute edin.
+neticede goreceksiniz ki , private synonymi yalniz bir user deyil bir nece user gore biler .

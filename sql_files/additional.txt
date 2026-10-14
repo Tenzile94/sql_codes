@@ -1,0 +1,94 @@
+--1.  Yeni table qurmaq  Credits (ID PK, Remainder_ish number olsun ve tam ile olsun (125.69 daxil etmek olsun),
+--Remainder_vhd number olsun eynile remainder ish kimi, Date_open_licsh olsun ,Name_Owner olsun ve unique constraint out of line tetbiq edilsin ,type_credit sutunu olsun ve check constrainti ile yoxlanilsin ki, type credit daxilinde yalniz ‘uzunmuddetli’,ve ‘qisamuddetli’ sozleri olsun , type credit sutunu default valuesi qisamuddetli olsun’)
+create table credits (id number,
+                      reminder_ish number(7,3),
+                      reminder_vhd number(8,4),
+                      date_open_licsh date,
+                      name_owner varchar2(40), 
+                      constraint p_k primary key (id));
+ alter table credits rename column reminder_vhd  to remainder_vhd ;
+ alter table credits rename column reminder_ish  to remainder_ish ;                     
+                     
+--2) tableye 20 row  daxil etmek ve rowlar arasinda null valueleri de daxil etmek 
+insert into credits values (1,9575.89,600.67,to_date('20.04.2019','dd.mm.yyyy.'),'Sebuhi Quliyev')
+insert into credits values (2,1000,400.67,to_date('13.04.2011','dd.mm.yyyy.'),'Sevda Quliyeva')
+insert into credits values (3,8932.32,300.97,to_date('15.05.2020','dd.mm.yyyy.'),'Leyla Rehimova');
+insert into credits values (4,9575.89,600.67,to_date('18.04.2016','dd.mm.yyyy.'),'Ali Aliyev');
+insert into credits values (5,8000,300.67,to_date('11.12.2020','dd.mm.yyyy.'),'Semed Semedov');
+insert into credits values (6,4894.89,200,to_date('15.04.2011','dd.mm.yyyy.'),'Ceyran Veliyeva');
+insert into credits values (7,9900,700.67,to_date('08.07.2019','dd.mm.yyyy.'),'Cavid Aliyev');
+insert into credits values (8,2354.25,400.67,to_date('02.11.2017','dd.mm.yyyy.'),'Camal Bayramov');
+insert into credits values (9,8000.80,400,to_date('20.04.2015','dd.mm.yyyy.'),'Firengiz Quliyeva');
+insert into credits values (10,9805.89,550.35,to_date('22.10.2018','dd.mm.yyyy.'),'Lale Babayeva');
+insert into credits values (11,1000.4,60.67,to_date('20.07.2020','dd.mm.yyyy.'),'Esmira Eliyeva');
+insert into credits values (12,1500.89,100.5,to_date('10.03.2018','dd.mm.yyyy.'),'Tahir Adilov');
+insert into credits values (13,2600,160.6,to_date('20.09.2016','dd.mm.yyyy.'),'Ramal Isayev');
+insert into credits values (14,9950.83,400.9,to_date('23.10.2019','dd.mm.yyyy.'),'Ramal isayev');
+insert into credits values (15,6000.89,300,to_date('17.02.2021','dd.mm.yyyy.'),'Sebuhi Quliyev');
+insert into credits values (16,3875.94,120.67,to_date('14.01.2017','dd.mm.yyyy.'),'Xeyale Qarayeva');
+insert into credits values (17,5550.8,200.57,to_date('05.11.2020','dd.mm.yyyy.'),'Togrul Ceferov');
+insert into credits values (18,800,80.5,to_date('05.01.2021','dd.mm.yyyy.'),'Togrul Ceferov');
+insert into credits values (19,2100.64,200,to_date('14.11.2019','dd.mm.yyyy.'),'Kemale Ceferova');
+insert into credits values (20,950.8,150.45,to_date('28.10.2020','dd.mm.yyyy.'),'Aliye Ismayilova');
+ 
+select * from credits;
+
+--3) Aylara Gore Sort etmek ayin gunleri nezere alinmasin
+select * from credits order by extract(month from date_open_licsh);
+
+--4)musteri adlarina gore cemleyib remainder_ish ve remainder_vhd uzre summalari cixarmaq grouplasmis 
+--rowlar arasinda ilk 3 rownu cixartmaq
+select sum(remainder_ish),sum(remainder_vhd) from credits group by name_owner order by 1,2 fetch next 3 rows only;
+
+--5)her bir musteriye gore kreditin qaliginin orta meblegini cixarmaq
+select avg(remainder_vhd) from credits group by name_owner;
+select avg(remainder_vhd) from credits ;
+
+--7) Having where group bydan istifade etmekle ve between , in ,not in ,and ,or, 
+--is null,is not null operatorlarini tetbiq etmekle 5 ferqli select cixarmaq
+select id,name_owner ,max(remainder_ish) from credits 
+where extract (month from date_open_licsh) between 5 and 8 group by id,name_owner;
+
+select name_owner,avg(remainder_vhd) from credits where round(remainder_vhd ) in (200,300,600)
+having max(remainder_ish)>5000 group by name_owner;
+
+select sum(remainder_ish),name_owner from credits where round(remainder_vhd) not in(200,300,700,450)
+ and extract(year from date_open_licsh) between  2015 and 2018 group by name_owner;
+
+ select name_owner,count(name_owner) from credits where  name_owner is null or name_owner like 'S%'
+  having sum(remainder_ish)<6000 group by name_owner;
+ 
+select name_owner,count (name_owner) from credits where id is not null and extract(day from date_open_licsh) between 15 and 25
+ group by name_owner ;
+--5) ayin gunleri ve summalar verilib.Her ayin muxtelif gunlerinde emeliyyatlar olub ele gunler var ki hec emeliyyat olmayib.
+--Gunlere gore sort edib aylar uzre olan sum cemini emeliyyat olan gunlerin sayina bolmek neticede orta summani tapmaq
+select round(avg(sum(remainder_ish)/count(extract(day from date_open_licsh)))) from credits
+ group by extract(month from date_open_licsh) order by extract(day from date_open_licsh); 
+
+--8) ID si 10 dan boyuk olan butun emeliyyatlarin cemini ve onlarin remainder_ish ve remainder_vhd uzre minmumlarini tapmaq
+select sum(remainder_ish),min(remainder_ish),min(remainder_vhd) from credits where id >10 ;
+
+--9) Total Remainder_vhd summasi  500 -den boyuk olanlarin ID ni ekrana cixartmaq
+ select id from credits where remainder_vhd>500;
+ select id from credits having sum( remainder_vhd)>500 group by id;
+
+--10)Adinin uzunlugu 4 den boyuk olan butun musterilerin adini ve maxsimum  remainder_ish ve max remainder_vhd mebleglerini cixartmaq
+select name_owner,max(remainder_vhd),max(remainder_vhd) from credits where length(name_owner)>4 group by name_owner;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,54 @@
+--not null,check,unique
+--analitik useri yaratmaq asagida qeyd edilenleri bu userde yaratmaq
+--constraintlerin her 3 novunden istifade etmekle cedvel yaratmaq (bezilerini ozunuz adlandirin)
+--cedvellerde kecilen sutun tiplerinin muxtelif novlerinden istifade etmek
+--not null constraintini drop etmek
+--drop edilen constraint olan sutuna check constrainti qoymaq
+--cedvele en azi 5 insert etmek
+alter session set "_oracle_script"=true;
+create user Analytic identified by Analytic;
+grant create session to Analytic;
+grant create table to Analytic;
+grant unlimited tablespace to Analytic;
+create table Computers (Id number Unique,
+                        name varchar2(15) constraint N_n not null,
+                        price number check (price>1200),
+                        color char(25));  
+                        
+select * from user_constraints uc where uc.TABLE_NAME='COMPUTERS';
+
+insert into computers values (1,'Dell',1300,'Black');
+insert into computers values (2,'Acer',2300,'Grey');
+insert into computers values (3,'Hp',2800,'White');
+insert into computers (Id,name,color) values (4,'Lenovo','Grey');
+insert into computers values (5,'Toshiba',2100,'Black');
+insert into computers values (6,'Apple',1100,'Grey');
+
+alter table computers drop constraint N_n;
+
+alter table computers modify color constraint N_1 not null;
+
+insert into computers (Id,name,price) values (7,'Lenovo',1600);
+
+select* from user_constraints uc where uc.TABLE_NAME='COMPUTERS';
+
+alter table computers drop constraint N_1;
+
+alter table computers modify color check (color not like 'Y%w');
+
+insert into computers values (8,'Apple',1370,'Yellow');
+select* from computers;
+
+
+
+
+
+
+
+
+
+
+
+
+
+

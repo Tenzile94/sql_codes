@@ -1,0 +1,129 @@
+/* Employee tablesini qurmaq
+(ID ,Name,Salary_ID, department_id) ID PK olsun,Name Unique
+2. Department tablesini qurmaq d_ID , d_name, Salary_Id ,D_Id PK olsun
+3. Salary tablesini qurmaq (S_ID PK, Summa ) iki sutundan ibaret olsun ve summa sutunu
+not null olsun
+4. Salarye 5 melumat insert etmek
+5. Employeede hem department_id ni hem de Salary_ID ni foreign key elan etmek
+6. Departmentdeki Salary_ID ni foreign key elan etmek
+7. Department tablesine 5 melumat insert etmek
+8. Employee tablesine 10 melumat insert etmek
+9. Employeede 5 setirde olan Name sutunundaki melumatlari update etmek*/
+
+
+create table Employee (Id number primary key,
+                       Name varchar2(20) unique,
+                       Department_id number references department(D_id),
+                       Salary_id number references  salary(S_id) 
+                          );
+insert into Employee values(1,'Nermin Qasimova',3,1);
+insert into Employee values(2,'Elvin Haciyev',4,1);
+insert into Employee values(3,'Leyla Quliyeva',1,2);
+insert into Employee values(4,'Adil Eliyev',2,4);
+insert into Employee values(5,'Polad Bayramov',4,5);
+insert into Employee values(6,'Aydan Seyidova',5,3);
+insert into Employee values(7,'Ferid Quliyev',2,4);
+insert into Employee values(8,'Lale Seyidova',3,1);
+insert into Employee values(9,'Amil Veliyev',5,3);
+insert into Employee values(10,'Afet Suleymanova',3,1);
+
+select * from Employee;
+update Employee set name='Aliye Qasimova' where Id=1;
+update Employee set name='Adil Quliyev' where Department_id=1;
+update Employee set name='Feride Qasimova' where Department_id=2 and Salary_id=4;
+update Employee set name='Afet Suleymanli' where Id=10;
+update Employee set name='Polad Heshimov' where Department_id=4  and Salary_id=5;
+
+
+ create table Department1(D_id number primary key,
+                         D_name varchar2(30),
+                         Salary_id number references salary(S_id));
+insert into Department1 values(1,'president',2);
+insert into Department1 values(2,'Manager',4);
+insert into Department1 values(3,'Analyist',1);
+insert into Department1 values(4,'Technic',5);
+insert into Department1 values(5,'Clerk',1);
+
+select * from Department1;
+
+create table Salary (S_id number primary key,
+                     Summa number not null);
+                     
+insert into salary values(1,1100);
+insert into salary values(2,1800);
+insert into salary values(3,800);
+insert into salary values(4,1200);
+insert into salary values(5,600);
+ select * from Salary;
+
+/*1)Customer- tablesini qurmaq,name uzerine not null ,surname uzerine unique constrainti qoymaq
+2)Adress - tablesini qurmaq
+3)Bank Account-Account No uzerine not null constrainti yaratmaq
+Qalan PK ve FK-lari ozunuz teyin etmeli Elaqeleri duzgun sekilde qurmali
+
+Her tableye 10 melumat*/
+
+create table customer (Id number primary key,
+                       Name varchar2(20) not null,
+                       Surame varchar2(25) unique);
+                       
+ insert into customer values(1,'Leyla','Qasimova');
+ insert into customer values(2,'Alim','Qulyev');                   
+ insert into customer values(3,'Rauf','Haciyev');                   
+ insert into customer values(4,'Leyla','Bayramova');                   
+ insert into customer values(5,'Huseyn','Huseynov');                   
+ insert into customer values(6,'Guler','Israfilova');                   
+ insert into customer values(7,'Bextiyar','Seyidov');                   
+ insert into customer values(8,'Lale','Veliyeva');                   
+ insert into customer values(9,'Rasim','Orucov');                   
+ insert into customer values(10,'Qasim' ,'Hesimov');   
+ select *from customer;                
+                   
+Create table Adress (id number primary key,
+                     A_name varchar2(50),
+                     cus_id number references customer(Id));
+ 
+insert into Adress values(1,'Baku',2);
+insert into Adress values(2,'Sumqayit',1);
+insert into Adress values(3,'Baku',3);
+insert into Adress values(4,'Gendje',4);
+insert into Adress values(5,'Sirvan',6);
+insert into Adress values(6,'Gendje',5);
+insert into Adress values(7,'Sumqayit',8);
+insert into Adress values(8,'Qazax',10);
+insert into Adress values(9,'Qebele',9);
+insert into Adress values(10,'Sumqayit',7);
+
+select * from Adress;
+
+                     
+create table Bank_Account(Id number primary key,
+                          B_name varchar2(30),
+                          account_no number not null,
+                          cus_id references customer(Id)
+                          );
+                          
+insert into Bank_Account values (1,'Beynelxalq Bank',12123,3);   
+insert into Bank_Account values (2,'Xalq Bank',12423,2);                         
+insert into Bank_Account values (3,'Milli Bank',42123,6);                         
+insert into Bank_Account values (4,'Beynelxalq Bank',54123,4);                         
+insert into Bank_Account values (5,'Bank Respublika',12122,7);                         
+insert into Bank_Account values (6,'Kapital Bank',52123,5);                         
+insert into Bank_Account values (7,'Uni Bank',82123,9);                         
+insert into Bank_Account values (8,'Kapital Bank',72623,10);                         
+insert into Bank_Account values (9,'Milli Bank',12153,8);                         
+insert into Bank_Account values (10,'Express Bank',12124,1);                         
+
+select * from Bank_Account;
+                          
+                          
+                          
+                   
+
+
+
+
+
+
+
+              

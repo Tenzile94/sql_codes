@@ -1,0 +1,60 @@
+--Aouthors ve books tableleri yaratmaq
+--A_id,A_name olsun
+--B_id,B_name,B_date,B_price,B_quantity,B_sell_quantity,A_id 
+
+create table Authors (a_id number,
+                      a_name varchar2(40));
+                      
+insert into authors values(1,'Chingiz Abdullayev');                     
+insert into authors values(2,'Agatha Cristie');                     
+insert into authors values(3,'Xalid Huseyni');                     
+insert into authors values(4,'Sabahattin Ali');                     
+insert into authors values(5,'Marc Levi');                     
+                      
+create table books (b_id number,
+                    b_name varchar2(40),
+                    b_date number,
+                    b_price number,
+                    b_quantitiy number,
+                    b_sell_quaantity number,
+                    a_id number); 
+                    
+                                         
+insert into books values(1,'Mavi Melekler',2010,10,10000,5500,1);
+insert into books values(2,'Cerpeleng Ucuran',2017,15,1000000,10000,3);
+insert into books values(3,'Bashqa bir xosbextlik',2008,12,900000,700000,5);
+insert into books values(4,'Kurk Mantolu Madonna',2014,10,100000,90000,4);
+insert into books values(5,'Mavi Qatarin Sirri',1990,9,800000,750000,2);
+
+
+--1) Joinlerin her bir tipinden istifade ederek  her muellifin nece kitab satdigini mueyyenlesdirmek
+select a.a_name,b.b_sell_quaantity from authors a
+inner join books b on a.a_id=b.a_id;
+
+select a.a_name name,b.b_sell_quaantity quantity from authors a left join books b on a.a_id=b.b_id;
+
+select a_name,b_price,b_sell_quaantity from authors a right outer join books b on a.a_id=b.a_id;
+
+select * from authors a full join books b  on a.a_id=b.a_id; 
+
+--2)  kitab satisindan en cox qazanc elde etmis muellifin adini ekrana cixartmaq
+select a_name name from authors a full join books b on a.a_id=b.a_id order by b_sell_quaantity*b_price desc fetch next 1row only;
+select a_name name from authors a inner join books b on a.a_id=b.a_id order by b_sell_quaantity*b_price desc fetch next 1row only;
+
+select b_name, b_sell_quaantity*b_price from books order by b_sell_quaantity*b_price desc ;
+
+
+--3)nested functiondan istifade etmekle butun muelliflerin satdigi kitablarin sayina gore ededi ortani teyin etmek
+select avg(sum(b_sell_quaantity)) from authors a inner join books b on a.a_id=b.a_id group by a_name;
+
+--4)her bir muellifin adini ve en ucuz satdigi qiymeti mueyyenlesdirmek ve muellifin adina adinin uzunlugunun yarisi qeder 
+--'@' simvolunu sagdan birlesdirmek eyni zaman cixan minimal qiymetlerin her birinin  sag hissesine AZN valutasini birlesdirmek .
+select a_name ,min(b_price)||'AZN' price,rpad(a_name,(length(a_name)+round(length(a_name)/2)),'@') result from authors a 
+inner join books b on a.a_id=b.a_id group by a_name;
+
+
+
+
+
+
+

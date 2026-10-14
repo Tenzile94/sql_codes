@@ -1,0 +1,101 @@
+   --T OPERATORS   
+--1.  Asag?dak? table yaratmaq
+
+CREATE TABLE departments ( department_id number , 
+                           department_name varchar2(30),
+                           location   varchar2(20)     
+                                   );
+alter table departments modify department_id primary key;
+
+INSERT INTO departments VALUES (10,'ACCOUNTING','NEW YORK');
+INSERT INTO departments VALUES (20,'RESEARCH','DALLAS');
+INSERT INTO departments VALUES (30,'SALES','CHICAGO');
+INSERT INTO departments VALUES (40,'OPERATIONS','BOSTON');
+COMMIT;
+
+
+CREATE TABLE employees1 ( employee_id number,
+                         name varchar(15),   
+                         job varchar(20),          
+                         manager_id number,  
+                         hiredate  date,    
+                         salary number ,      
+                         commission number,   
+                         department_id number);
+alter table employees1 modify department_id references departments(department_id);
+
+INSERT INTO employees1 VALUES (7369,'SMITH','CLERK',7902,to_date('17-12-1980','dd-mm-yyyy'),800,NULL,20);
+INSERT INTO employees1 VALUES (5678,'ADAM','MANAGER',6784,to_date('17-12-1990','dd-mm-yyyy'),1500,50,30);
+INSERT INTO employees1 VALUES (4566,'JANE','CLERK',7902,to_date('02-05-2000','dd-mm-yyyy'),800,60,40);
+INSERT INTO employees1 VALUES (2969,'UILL','CLERK',7902,to_date('17-12-1980','dd-mm-yyyy'),800,NULL,20);
+INSERT INTO employees1 VALUES (8849,'SAM','SALESMAN',1089,to_date('09-10-1980','dd-mm-yyyy'),800,80,30);
+INSERT INTO employees1 VALUES (3947,'SMITH','ANALYIST',4783,to_date('29-06-1995','dd-mm-yyyy'),700,50,40);
+INSERT INTO employees1 VALUES (4839,'GEORG','PRESIDENT',8394,to_date('17-03-1999','dd-mm-yyyy'),2700,200,10);
+INSERT INTO employees1 VALUES (2957,'JANE','SALESMAN',1089,to_date('15-11-2007','dd-mm-yyyy'),600,NULL,20);
+INSERT INTO employees1 VALUES (9043,'LAURA','CASHIER',5994,to_date('26-01-2010','dd-mm-yyyy'),700,60,30);
+INSERT INTO employees1 VALUES (2078,'ALEX','ANALYIST',4783,to_date('16-04-2015','dd-mm-yyyy'),900,90,10);
+INSERT INTO employees1 VALUES (3421,'ANDRES','MANAGER',6784,to_date('19-06-1999','dd-mm-yyyy'),1500,50,20);
+
+COMMIT;
+
+  
+--2) Employee tablesine yuxaridaki kimi 10 melumat da insert etmek
+--1) intersect ve order by-dan istifade ederek select yazmaq 
+
+select e.commission,e.salary from employees1 e where e.department_id=20
+intersect
+select e.commission, e.salary from employees1 e where e.department_id=30 order by 2 desc;
+
+--3)DEPARTMENT_ID DEPARTMENT_NAM sutunlarini cekmek , unionun 1 de
+-- DEPID  20 den boyun beraber,diger unionda dep_id30 dan kicik beraberler.
+select d.department_id,d.department_name from departments d where d.department_id>=20
+union
+select d.department_id,d.department_name from departments d where d.department_id<=30;
+ 
+
+--4)Her iki tableni departament idleri cekmek serti ile insersect etmek,minus etmek ve union all etmek
+select d.department_id  from departments d where d.department_name like 'C%'
+intersect
+select d.department_id  from departments d where d.department_name  like 'B%';
+
+select d.department_id  from departments d where d.department_name like 'C%'
+intersect
+select e.department_id  from employees1 e where e.name like 'J%';
+
+select  d.department_id  from departments d
+minus
+select e.department_id  from employees1 e
+
+select  d.department_id  from departments d
+union all
+select e.department_id  from employees1 e
+
+
+--5)date 2000 den asagilar ile date 2005 den yuxarilari union etmek*/
+select e.department_id,e.job ,e.name from employees1 e where extract (year from e.hiredate)<2000
+union  
+select  e.department_id,e.job ,e.name from employees1 e where extract (year from e.hiredate)>2005 order by 1;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

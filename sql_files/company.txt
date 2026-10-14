@@ -1,0 +1,37 @@
+create table deposits (dep_hesab number,
+                       dep_novu varchar2(20),
+                       musteri_id number,
+                       dep_mebleg number);
+
+
+insert into deposits values(1222,'Dollar',1,700);
+insert into deposits values(1223,'Azn',2,1600);
+insert into deposits values(3332,'Euro',3,800);
+insert into deposits (dep_mebleg,musteri_id,dep_novu,dep_hesab) values (900,4,'Azn',3453);
+select *from deposits;
+delete  from deposits where dep_mebleg=800; 
+select *from deposits;
+select * from deposits where (dep_mebleg!=1000 and dep_mebleg!=500 and dep_mebleg!=980);
+
+
+
+
+
+
+create table company (Id number,
+                      Name varchar2(20),
+                       Date_of_creation date default to_date('12.03.2020','dd.mm.yyyy'),
+                       Emp_count number,
+                       Profit number);
+insert into company values(1,'Cotton',to_date('12.03.2011','dd.mm.yyyy'),10,500);
+insert into company values(2,'Silk',to_date('15.01.2005','dd.mm.yyyy'),16,600);
+insert into company values(3,'Furniture',to_date('15.08.1995','dd.mm.yyyy'),26,1000);
+insert into company values(4,'Watch',to_date('01.01.2019','dd.mm.yyyy'),18,900);
+select* from company;
+select *from company where( profit=150 and Date_of_creation=sysdate) or emp_count=10;
+delete from company where Emp_count between 15 and 20;
+select *from company where name like '%a%';
+delete from company Where name like '%b';
+select* from company where date_of_creation = to_date('01.01.2019','dd.mm.yyyy');
+
+select * from company;

@@ -1,0 +1,121 @@
+﻿﻿GROUP BY
+
+create table info_sales
+( trans_id number primary key,
+  region varchar2(100),
+  country varchar2(100), 
+  city  varchar2(100),
+  amount number
+);
+
+insert into info_sales values (1,'Asia','UAE','Abu Dhabi',400) ;
+insert into info_sales values (2,'Asia','UAE','Abu Dhabi',600) ;
+insert into info_sales values (3,'Asia','UAE','Duabi',300) ;
+insert into info_sales values (4,'Asia','UAE','Duabi',120) ;
+insert into info_sales values (5,'Africa','Egypt','Cairo',309) ;
+insert into info_sales values (6,'Africa','Egypt','Cairo',123) ;
+insert into info_sales values (7,'Europe','Spain','Madrid',109) ;
+insert into info_sales values (8,'Europe','Spain','Madrid',153) ;
+insert into info_sales values (9,'Europe','Spain','Barcelona',193) ;
+insert into info_sales values (10,'Asia','Jordan','Amman',300) ;
+insert into info_sales values (11,'Asia','Jordan','Zarqa',120) ;
+commit;
+select * from info_sales;
+--Yuxaridaki insertleri etmek.
+-- her regionda olan ehali sayini tapmaq
+
+select region,sum(amount) from info_sales group by region;
+
+--Avropadan basqa diger regionlardaki ehali sayini tabmaq
+select region,sum(amount) from info_sales where region!= 'Europe'  group by region;
+
+--her region uzre ehalinin ededi ortasini tapmaq
+select region, round(avg(amount)) from info_sales group by region;
+
+--Egypt,Jordan,Spain olkelerinden olan ehalinin sayini tapmaq
+select country,sum(amount) from info_sales  where country in('Egypt','Jordan','Spain')  group by country; 
+
+--Asia qitesinde yerlesen ve UAE,Jordan,Spain olkelerinden birinde yasayan turistlerin sayini tapmaq
+select country,region,sum (amount) from info_sales where region='Asia' and country in( 'UAE','Jordan','Spain') group by country,region;
+
+--her seherde ne qeder ehali var tapmaq
+select city,sum(amount) from info_sales group by city;
+
+--en az insan yasayan regionunun adi i ve sayi ekrana cixartmaq
+select region ,count(region) from info_sales  group by region  order by sum(amount) fetch next 1 rows only  ;
+
+--en cox ehalisi olan 3 seher ve sayi ekrana cixartmaq
+select city,count(city) from info_sales group by city 
+order by sum(amount) desc fetch  next 3 rows only;
+ 
+--her  qite,olkeye gore ehali sayi tapmaq
+select region,sum(amount),country,sum(amount) from info_sales group by (region, country) ;
+
+
+
+
+
+--1)CL_loan_portfolio adli kredit provotkalarini ozunde saxlayan table yaratmaq
+--(Kredithesab(5 reqemli olsun PK OLMASİN ,kred_mebleg,alinma_tarixi,faizi,musteriadi ) sutunlari yaratmaq.
+create table CL_loan_portfolio (id number,
+                                Hesab number check(length(hesab)=5),
+                                k_mebleg number,
+                                alinma_tarixi date,
+                                faizi number,
+                                M_name varchar2(50));
+      select * from  CL_loan_portfolio;                        
+--2) 20 insert etmek inseryin her iki versiyasindan istifade edib(1 musterinin bir neche kreditin daxil etmek)
+insert into  CL_loan_portfolio values( 1,24726,1000,to_date('11.05.2020','dd.mm.yyyy'),5,'Sahil Memmedov');
+insert into  CL_loan_portfolio values( 2,67446,5000,to_date('15.05.2019','dd.mm.yyyy'),7,'Sahil Memmedov');
+insert into  CL_loan_portfolio values( 3,23546,10000,to_date('17.02.2018','dd.mm.yyyy'),5,'Adil Hesenov');
+insert into  CL_loan_portfolio values( 4,23446,2000,to_date('21.06.2020','dd.mm.yyyy'),4,'Qasim Qasimov');
+insert into  CL_loan_portfolio values( 5,43646,1000,to_date('01.08.2019','dd.mm.yyyy'),4,'Qasim Qasimov');
+insert into CL_loan_portfolio values( 6,84746,8000,to_date('09.01.2018','dd.mm.yyyy'),5,'Tahir Seyidov');
+insert into  CL_loan_portfolio values( 7,25646,1000,to_date('11.05.2020','dd.mm.yyyy'),6,'Sahil Memmedov');
+insert into  CL_loan_portfolio values( 8,89476,3000,to_date('10.05.2019','dd.mm.yyyy'),5,'Sahil Memmedov');
+insert into  CL_loan_portfolio values( 9,75546,15000,to_date('03.04.2017','dd.mm.yyyy'),7,'Semed Quliyev');
+insert into  CL_loan_portfolio values( 10,11446,4000,to_date('12.11.2020','dd.mm.yyyy'),8,'Lale Memmedova');
+insert into  cl_loan_portfolio(id,hesab,faizi,M_name,k_mebleg) values (11,47637,4,'Serxan Kerimov',1500);
+insert into  cl_loan_portfolio(id,hesab,alinma_tarixi,M_name,k_mebleg) values (12,11137,to_date('05.05.2018','dd.mm.yyyy'),'Serxan Kerimov',3500);
+insert into  cl_loan_portfolio(id,hesab,faizi,M_name,k_mebleg) values (13,46737,2,'Leyli Semedova',1400);
+insert into  cl_loan_portfolio(id,hesab,M_name,k_mebleg) values (14,47637,'Seymur Qasimov',6000);
+insert into  CL_loan_portfolio values( 15,14726,2300,to_date('16.07.2019','dd.mm.yyyy'),3,'Ramal Quliyev');
+insert into  CL_loan_portfolio values( 16,24726,9000,to_date('19.05.2021','dd.mm.yyyy'),7,'Ramal Quliyev');
+insert into  CL_loan_portfolio values( 17,64326,4000,to_date('17.02.2017','dd.mm.yyyy'),10,'Ramal Quliyev');
+insert into  cl_loan_portfolio(id,faizi,M_name,k_mebleg) values (18,3,'Xeyale Babayeva',1100);
+insert into  cl_loan_portfolio(id,hesab,faizi,M_name,k_mebleg) values (19,17837,9,'Serxan Kerimov',1700);
+insert into  CL_loan_portfolio values( 20,29046,12000,to_date('13.11.2016','dd.mm.yyyy'),8,'Guler Qarayeva');
+
+
+
+--3)faizi 2 den boyuk kreditlerden en boyuk summasi olan ve musteri adini cixartmaq
+select m_name,max(k_mebleg) from cl_loan_portfolio where faizi>2 group by m_name;
+
+
+--4)minimum sayda kredite malik musterini ve en boyuk summasini cixartmaq
+select m_name,max(k_mebleg) from cl_loan_portfolio having count(hesab)=1 group by m_name order by count(hesab ) fetch next 1 row only;
+
+--5)her musteriye gore orta kredit meblegi 1000 den boyuk olan orta kredit meblegin ve musteri adini cixarmaq
+select round(avg(k_mebleg)),m_name from cl_loan_portfolio having avg(k_mebleg)>1000 group by m_name;
+
+--6)alinma tarixi 2015 ci ilden boyuk minimal mebləgli kreditin meblegini faizini musteri adin tapmaq
+select m_name,faizi,k_mebleg ,min(k_mebleg)from cl_loan_portfolio where extract(year from alinma_tarixi)>2015 group by m_name,faizi,k_mebleg;
+
+--7) en boyuk faizle musterinin adini ,faizini tapmaq
+select m_name,faizi from cl_loan_portfolio where faizi is not null group by m_name,faizi order by max(faizi) desc fetch next 1 rows only;
+
+--8)en cox kredit hesabi olan musteriler arasindan malik oldugu kreditlerin sayi 1 den cox olanlari cixartmaq
+select m_name,hesab from cl_loan_portfolio having count(hesab)>1 group by m_name,hesab order by count(hesab) desc;
+
+
+
+
+
+
+
+
+
+
+
+
+

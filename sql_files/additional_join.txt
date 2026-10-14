@@ -1,0 +1,82 @@
+create table persons (Pk_person_id number primary key,
+                     name varchar2(26),
+                     email varchar(30));
+                     
+create table passport_details(Pk_passport_id number,
+                              passport_number varchar2(15),
+                              Pk_person_id number references persons(Pk_person_id ));
+                              
+ alter table passport_details modify Pk_passport_id unique; 
+                           
+insert into persons values(1,'Leyla Quliyeva','L.guliyeva@gmail.com');
+insert into persons values(2,'Kamran Celilov','CelilovK@gmail.com');
+insert into persons values(3,'Sevda Musayeva','MusayevaSevdaa@mail.ru');
+insert into persons values(4,'Aydan Qasimova','Aydan.Q@gmail.com');
+insert into persons values(5,'Semed Qarayev','Q.Semed@mail.ru');
+insert into persons values(6,'Leyla Quliyeva','L.guliyeva@gmail.com');
+insert into persons values(7,'Raul Hesenov','R.Hesenov@yandex.com');
+insert into persons values(8,'Ramal Orucov','Orucovramal@mail.ru');
+insert into persons values(9,'Banu Eliyeva','AliyevaBanu@gmail.com');
+insert into persons values(10,'Orxan Babayev','Babayev@gmail.com');
+
+alter table passport_details modify passport_number check (length(passport_number)=8);
+select * from user_constraints  where TABLE_NAME='PASSPORT_DETAILS';
+
+
+alter table passport_details drop constraint SYS_C008433;
+insert into passport_details values(1,'C23G36Y3',2);
+insert into passport_details values(2,'C34F56H7',3);
+insert into passport_details values(3,'F123J3V3',7);
+insert into passport_details values(4,null,6);
+insert into passport_details values(5,'V54H61U7',10);
+insert into passport_details values(6,'S31E68K7',9);
+insert into passport_details values(7,'U90O42V0',1);
+insert into passport_details values(8,'A12V80L5',4);
+insert into passport_details values(9,null,8);
+insert into passport_details values(10,'D44F12G6',null);
+
+select *from passport_details;
+
+--her bir personun adini ve pasport nomrein ekrana cixartmaq  ve id ye gore siralamaq
+select p.name,pd.passport_number from persons p
+ inner join passport_details pd on p.pk_person_id=pd.pk_person_id order by p.pk_person_id;
+ 
+ select p.name,pd.passport_number from persons p
+ left join passport_details pd on p.pk_person_id=pd.pk_person_id order by p.pk_person_id;
+ 
+ 
+--id si en kicik olan personun adin cixartmaq
+select p.name from persons p order by p.pk_person_id fetch next 1 row only;
+select p.name from persons p left join passport_details pd
+ on p.pk_person_id=pd.pk_person_id order by pd.pk_passport_id fetch next 1 rows only;
+ 
+--email sutununda @ isaresine qeder ekrana cixartmaq
+select substr(email,1,instr(email,'@',1,1)-1) result from persons;
+
+
+--pasport melumati olmayan personu ekrana cixartmaq
+select * from persons p full join  passport_details pd 
+on p.pk_person_id=pd.pk_person_id where pd.passport_number is null;
+
+select p.pk_person_id,p.name, p.email from persons p full join  passport_details pd 
+on p.pk_person_id=pd.pk_person_id where pd.pk_person_id is null;
+
+
+select * from persons p where p.pk_person_id=
+(select  pd.pk_passport_id from passport_details pd where pd.pk_person_id is null);
+
+--pasport nomresi A ile baslayani ekrana cixartmaq
+select p.pk_person_id, p.name,pd.passport_number from persons p 
+left join passport_details pd on p.pk_person_id=pd.pk_person_id 
+where pd.passport_number like 'A%';
+
+select p.pk_person_id, p.name from persons p where p.pk_person_id in
+(select  pd.pk_person_id from passport_details pd where pd.passport_number like 'A%');
+
+select p.pk_person_id, p.name,pd.passport_number from persons p where p.pk_person_id in
+(select  pd.pk_person_id,  pd.passport_number from passport_details pd where pd.passport_number like 'A%');
+
+
+--ikinci cedvelden sutun adini nece cekek
+
+

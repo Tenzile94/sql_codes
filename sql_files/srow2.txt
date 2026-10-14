@@ -1,0 +1,92 @@
+﻿create table p_language (ID number(3),
+                         l_name varchar2(30),
+                         l_date date,
+                         l_author varchar2(30),
+                         country varchar2(25) , 
+                         about varchar2(200),
+                         status varchar2(2) , 
+                         raiting number(3),
+                         exp number(7,2),
+                         constraint PK primary key (ID) ,
+                         constraint CH1 check (status in ('0','1')),
+                         constraint CH2 check (raiting in (10,20,30,40,50,60,70,80,90,100)));
+drop table p_language;
+
+select * from p_language
+　alter table p_language modify country varchar2(35);
+alter table p_language modify status varchar2(40);
+insert into p_language values (1,'c#',to_date('01.01.2000','dd.mm.yyyy'),'andres HEYLSBERQ', 'AMERIKA BIRLESMIS STATLARI','oop yonumlu proqramlasdirma dilidir',1,70,100);
+insert into p_language values (2,'java',to_date('01.01.1995','dd.mm.yyyy'),'James Gosling', 'Boyuk Britaniya','oop yonumlu proqramlasdirma dilidir',1,90,1000.30);
+insert into p_language values (3,null,to_date('01.01.2004','dd.mm.yyyy'),null, null,'wep programlasdirma ',1,30,2200);
+insert into p_language values (4,' kotlin',to_date('01.01.2017','dd.mm.yyyy'),'Dralin Tig', 'Cin','oop yonumlu proqramlasdirma dilidir',1,40,null);
+insert into p_language values (5,'Pascal',to_date('01.01.2002','dd.mm.yyyy'),'Ada lovleys', 'avstriya','oop yonumlu proqramlasdirma dilidir',1,30,null);
+insert into p_language values (6,null,to_date('01.01.2013','dd.mm.yyyy'),'Mary bohomer', 'avstriya','oop yonumlu proqramlasdirma dilidir',1,40,null);
+insert into p_language values (7,'f#',to_date('01.01.2009','dd.mm.yyyy'),'Agata Lari', 'Ukrayna','oop yonumlu proqramlasdirma dilidir',1,70,50);
+
+
+
+
+--Soyadlari ayiraraq ekrana cixartmaq
+select substr(l_author,instr(l_author,' ',1,1)+1)from p_language;
+
+select initcap(substr (l_author,1,instr (l_author,' ',1)-1)) only_name from p_language;
+
+
+--aboutda her sozun arasina - isaresi elave etmek
+select replace(about,' ','-') from p_language;
+
+--reytingi olmayanlari cixartmaq
+
+select * from p_language where  raiting=null;
+
+--2000 ci ilden sonra yarananlarin adini ve yaranma ilini bu formatda cixartmaq :ad proqramlasdirma dili il -de yaradilmisdir
+select l_name ||' programlama_dili',l_date||' ilde_yaranmisdir.'  from p_language where extract(year from l_date)>2000;
+
+--her bir proqramlasdirma dilinin nece gun bundan once yarandigini hesablamaq
+select ceil(months_between(trunc(sysdate),l_date)) as result,l_date from p_language; 
+select floor(months_between(trunc(sysdate),l_date)) as difference from p_language;
+
+--her dilin yarandigi ilin sonuncu gununu tapmaq
+select last_day(add_months(l_date,12-extract(month from l_date))) as lastday, l_date from p_language;
+
+--adlari duzgun formada ekrana cixarmaq (boyuk kicik herfler)
+select initcap(l_name)name,initcap(l_author)author from p_language;
+
+--dilin adinda '#' simvolu varsa onu 'programming language 1' yoxdursa 'programming language' cixarmaq, 
+--about-da oop sozu varsa tekce 'oop' yoxdursa 'not oop' cixarmaq
+
+select  case  when l_name like '%#%' then 'programming language 1' 
+                   else 'programming language'  end result,l_name,
+        case when about like '%oop%' then 'oop'
+                   else 'not oop' end result ,about from p_language;
+                     
+                  
+
+select case when about like '%oop%' then 'oop'
+             else 'not oop' end result , about from p_language;
+
+select * from p_language;
+
+--status-da case when-den istifade etmek
+
+select case status when '1' then 'first status'
+                   else 'second status' end result,status from p_language;
+
+
+--exp de null value olarsa 0 ile evez etmek ve summalari tam hisseli valuleler alinmasi ucun yuvarlasdirmaq
+select round(nvl(exp,0)) from p_language;
+
+--country de decode ve case when-den istifade etmek,
+
+select decode(country,'Cin','Japon','AMERIKA BIRLESMIS STATLARI','USA',country, 'not Japon or USA' ) result from p_language;
+select decode (counry like '%C%','Korea') result from p_language;
+
+ select case country when lower(country) then upper(country)
+                     when country then initcap(country)
+                     else country end result,country from p_language;
+
+
+
+
+
+

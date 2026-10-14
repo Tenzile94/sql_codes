@@ -1,0 +1,95 @@
+﻿create table Customer (Customer_id number,
+                      Name varchar2(20),
+                      Surname varchar2(20),
+                      Date_of_birth date,
+                      Salary number);
+insert into Customer values(1,'Ali','Quliyev',to_date('20.02.1993','dd.mm.yyyy'),500);
+insert into Customer values(2,'Xeyale','Aliyeva',to_date('12.05.1990','dd.mm.yyyy'),550);
+insert into Customer values(3,'Aydin','Qasimov',to_date('07.08.1988','dd.mm.yyyy'),800);
+insert into Customer values(4,'Ferhad','Hesenov',to_date('17.12.1994','dd.mm.yyyy'),450);
+insert into Customer values(5,'Aydan','Seyidova',to_date('15.08.1991','dd.mm.yyyy'),900);
+insert into Customer values(6,'Leyla','Musayeva',to_date('07.11.1980','dd.mm.yyyy'),600);
+insert into Customer (Customer_id ,Name,Surname, Date_of_birth,Salary) values (7,'Selim','Quliyev',to_date('04.11.1993','dd.mm.yyyy'),600);
+insert into Customer (Date_of_birth,Salary,Surname,Customer_id,Name) values (to_date('01.10.1987','dd.mm.yyyy'),550,'Nagiyeva',8,'Kemale');
+insert into Customer (Date_of_birth,Salary,Surname,Customer_id,Name) values (to_date('22.03.1990','dd.mm.yyyy'),290,'Ceferov',9,'Arif');
+insert into Customer values(10,'Sabina','Babayeva',to_date(''),860);
+insert into customer (customer_id,name,surname,salary) values(11,'Ayan','Rzayeva',110);
+select * from customer;
+
+-- Anadan olma tarixi null olan və adında b hərfi olan dataları çıxarın
+select * from customer where date_of_birth is null and name like '%b%';
+
+-- 1980-ci ildən əvvəl anadan olan müştəriləri çıxarın
+select * from customer where extract(year from date_of_birth)<=1980;
+
+-- Maaşının 50 faiz artırılmasından və azaldılmasından alınan nəticəni göstərən select yazın
+select c.customer_id , c.name, c.surname,c.date_of_birth,c.salary, c.salary+(c.salary*50)/100 increase, c.salary-(c.salary*50)/100 decrase from customer C;
+
+-- Maaşları 10 azn azaltmaq üçün update yazın
+update customer set salary=salary-(salary*10)/100;
+
+---- Adinin ilk hərfi a son hərfi n olan və ya maaşı 550-dən fərqli olan dataları çıxarın
+select * from customer where name like 'A%n' or salary!=550 ;
+
+--İd-si 5-dən kiçik olanları cədvəldən silin
+delete from  customer where customer_id<5;
+truncate from customere where customer_i<5;
+
+-- Maaşının 10-a bölünməsindən alınan nəticəsi 20-dən aşağı olan müştəri id-lərini çıxarın
+select customer_id  from customer where salary/10<20;
+
+--  customer_id Müştəri_id və salary maas olaraq əvəz edərək selectdə çıxarın
+alter table customer rename column customer_id to müşteri_id ;
+
+alter table customer rename column salary to maaş;
+
+select *from customer;
+
+--1970-ci ilin oktyabr ayında anadan olan müştəriləri tapın və bu sorğuda table aliasından istifadəedin
+select c.müşteri_id,c.name,c.surname, c.date_of_birth , c. maaş from customer c where c.date_of_birth=to_date('10.1970','mm.yyyy');
+
+--Cədvələ bir sütun əlavə edin
+alter table customer add adress varchar2(40);
+
+--Bu sütunun adını sonra da tipini dəyişin
+alter table customer rename column adress to yaşayış_yeri;
+alter table customer modify  adress  char(40);
+
+--Cədvəlin adını dəyişin sonra bir insert update delete əmrini yazın
+alter table  customer rename to mushteriler;
+insert into mushteriler values (12,'Babek','Quliyev',to_date(''),350,null);
+update  mushteriler set maaş=700 where müşteri_id=6;
+delete   mushteriler date_of_birth  where name like'Aydan';
+select * from mushteriler;
+
+
+-- Cədvəli silin və geri qaytarın
+drop table mushteriler;
+flashback table musteriler to before drop;
+
+select *from mushteriler;
+drop table musteriler purge;
+
+---- Sessiyanı rollback edin
+insert into Customer values(12,'Leyli','Quliyeva',to_date('23.12.1991','dd.mm.yyyy'),600);
+select * from customer;
+savepoint D;
+update customer set name='Lale',surname='Qasimova' where customer_id=12;
+rollback to D;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

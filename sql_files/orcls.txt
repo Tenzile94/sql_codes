@@ -1,0 +1,17 @@
+alter session set "_oracle_script"=true;
+create user oracle_131 identified by oracle_131;
+
+create user oracle_133 identified by oracle_133;
+grant create session to oracle_131;
+grant create table  to oracle_131;
+grant unlimited tablespace to oracle_131;
+create table students (name varchar2(10),
+                       surname varchar2(13),
+                        age number,
+                        date_of_birth date);
+
+select * from students;
+insert into students values('Aygun','Kerimova',25,to_date ('12.10.1996','dd.mm.yyyy'));
+select * from students;
+insert into students (name,surname) values ('Aydin','Kazimov');
+insert into students (date_of_birth,age,surname,name) values (to_date('10.09.1994','dd.mm.yyyy'),27,'Qasimov','Teymur');

@@ -1,0 +1,231 @@
+
+--/*Id,Name ,Surname ,Score sutunlarindan ibaret Student  table yaratmaq ve icerisine hem null hem null olmayan 5 row insert etmek
+
+create table Students(Id number primary key,
+                      Name varchar2(20) not null,
+                      Surname varchar2(30),
+                      score number);
+ 
+
+insert into students values(1,'Meryem','Haciyeva',450);                      
+insert into students values(2,'Aynur','Quliyeva',null);                      
+insert into students values(3,'Seymur','Qasimov',650);                      
+insert into students values(4,'Semed','Babayev',370);                      
+insert into students values(5,'Fatime','Seyidova',null); 
+insert into students values(6,'Leyla','Veliyeva',387); 
+insert into students values(7,'Anar','Agayev',654);                    
+                    
+--1) score sutununda olan ededlerin 5e bolunmesinden alinan qaligi tapmaq
+select mod(score,5) from students;  
+select remainder(score,5) from students; 
+
+--2) ad soyad ve bali aralarinda vergul isaresi qoyaraq ekrana her ucunu bir sutunda cixartmaq butun telebeler yeni butun rowlar ucun
+                   
+ select concat( concat(name,','),concat(concat(surname,','),score)) as combine  from students;  --??
+ 
+ name || ' '||' '|| surname|| ' '||'-'||score as result from students;
+ 
+ --3) adlari null olan rowlarda surnamede ikinci 'a' herfinin yerini tapmaq
+select instr('surname','a',2) as letter_A from students  where name is null ;
+
+select instr('surname','a',2) as letter_A from students  where score=654 ;
+
+--4)scoru round ve trunc ederek 2 column birlikde selected cekerek ekrana cixartmaq
+update  students set score=567.784 where name='Meryem';
+
+select round(score),trunc(score) from students;
+ 
+select round(score,1),trunc(score,2) from students; 
+
+--5) 'lale55 ' sozunu selected cekmek ve 5 leri sag hisseden silmek
+select rtrim('lale555',5) from students;
+select trim(trailing 5 from 'lale55') from students;
+
+--6) '**nigar' sozunde *  lari silerek ekrana cixartmaq ve eyni zamanda bir selectin icerisinde ele etmek ki ,
+-- ikinci sutunda yalniz iki ulduz netice cixsin
+
+select ltrim('**nigar','*') , substr('**nigar',1,2) from students;
+ select trim(leading '*' from '**nigar') , substr('**nigar',1,2) from students;
+
+--7) 123.69     458.966  78.3698   4752.33   899.99
+--Round ve trunc  etmek tam hisseye esasen,vergulden sonar iki deneye esasen de round ve trunc neticelerini ekrana cixartmaq
+ 
+ select round(123.69),trunc(123.69),round(123.69,1),trunc(123.69,1),round(458.966),trunc(458.966),round(458.966,2),trunc(458.966,2)
+ from dual;
+ select round(78.3698),trunc(78.3698),round(78.3698,2),trunc(78.3698,2),round(4752.33),trunc(4752.33),round(4752.33,2),trunc(4752.33,2),
+ round(899.99),trunc(899.99),round(899.99,1),trunc(899.99,1) from dual;
+
+--8) 'lale.amrahova@gmail.com'  bu birlesmede select vasitesi ile @ isaresini kesmek yeni selected netice kimi column 
+--icerisinde yalniz @ isaresi cixsin
+
+ select substr('lale.amrahova@gmail.com',14,1) from dual;
+ 
+-- 9) surname sutununu ve surnamelerinin uzunluqlarini ekrana cixartmaq
+select surname,length (surname)as length from students;
+ 
+ --2)students tablede topladigi bal 500 dan cox olan teleberin adlari siyahisini cixartmaq ve
+ -- adlarina sagdan '@mail.ru' birlesmesini birlesdirmek
+select name ,concat(name,'@mail.ru'  )as mail_adress from students where score>500;
+
+ -- 3)students tablede soyadlardaki herflerin sayini taparaq siyahini ekrana cixartmaq
+
+ select length(surname) from students;
+ 
+ --4) students tablede  ad ve soyada gore order by etmek ve elifba sirasinin eksine siralamaq
+select name,surname from students order by name desc,surname desc;
+ 
+ --5)students tableye yeni 10 setir elave etmek insert zamani to_date den istifade etmek
+ alter  table students add   DAte_of_birth number;
+ alter table students  drop column DAte_of_birth  ;
+ alter table students add date_of_birth date;
+
+ select *from students;
+ 
+  insert into students values(8,'Sahil','Babayev',347,to_date('12,12,1994','dd,mm,yyyy'));
+  insert into students values(9,'Lale','Zeynalova',267,to_date('21,03,1996','dd,mm,yyyy'));
+  insert into students values(10,'Mahir','Qasimov',567.34,to_date('11,03,1994','dd,mm,yyyy'));
+ insert into students values(11,'Lamiye','Ehmedova',628,to_date('21,03,1999','dd,mm,yyyy'));
+ insert into students values(12,'Sevinc','Abbaszade',345.68,to_date('08,01,1990','dd,mm,yyyy'));
+ insert into students values(13,'Bextiyar','Islamov',457,to_date('13,09,1996','dd,mm,yyyy'));
+ insert into students values(14,'Emin','Mustafayev',null,to_date('18,10,1998','dd,mm,yyyy'));
+ insert into students values(15,'Benovse','Babayeva',534,to_date('25,011,1986','dd,mm,yyyy'));
+ insert into students values(16,'Rasim','Rzayev',498.432,to_date('11,05,1991','dd,mm,yyyy'));
+ insert into students values(17,'Semed','Quliyev',439,to_date('21,04,1999','dd,mm,yyyy'));
+
+ 
+ --6) 3 setir secib constraint qoyulmayan sutunlarda valueleri null etmek (update)
+ update students set score=null,date_of_birth =null where score=267;
+ update students set score=null,date_of_birth=null where name='Emin';
+ update students set score=null,date_of_birth=null where name='Meryem';
+ 
+ --7) ballari null olan telebeler haqqindaki melumatlari ekrana cixartmaq ve
+ --ile gore azalma sirasina esasen order by etmek siralamaq
+ 
+ select * from students where score is null order by date_of_birth desc;
+
+/*8)fesiller adlanan table yaratmaq ve id ni primary key elan etmek ,ad sutununu ise check constraint olsun ve yoxlasin fesil 'qis','yaz','yay','payiz'  sozlerinin icerisindedir
+
+--9) Aylar  adli table yaratmaq ay_id PK, ay_ad  unique  olsun, fesil_id  sutunlari olsun 
+10) Aylar tablesini alter ederek fesil_id uzerinde FK yaratmaq references olsun fesil tablesinin idsine
+
+11) Fesiller tablesine  4 row daxil etmek ve  Aylar tablesine 12 melumat her ayi her ayin adini ve feslini daxil etmek 
+
+12) ilin ilk 6 ayini yeni id si 6 dan kitik olanlari ekrama cixartmaq ve gelme sirasina gore ardicilliqla ekrana cixartmaq
+
+1*/   
+create table seasons (Id number primary key ,
+                      Name varchar2(15) check(name in ('winter','summer','spring','autmn')));
+                                     
+insert into seasons values(1,'spring');                   
+insert into seasons values(2,'summer');                   
+insert into seasons values(3,'autmn');                   
+insert into seasons values(4,'winter');                   
+                     
+create table Month_s (M_id number primary key,
+                      M_name varchar2(15) unique,
+                      season_id number );
+                                                                    
+alter table month_s modify season_id references seasons(id);
+
+ insert into month_s values (1,'January',4);
+ insert into month_s values (2,'February',4);
+ insert into month_s values (3,'March',1);
+ insert into month_s values (4,'April',1);
+ insert into month_s values (5,'May',1);
+ insert into month_s values (6,'June',2);
+ insert into month_s values (7,'July',2);
+ insert into month_s values (8,'August',2);
+ insert into month_s values (9,'September',3);
+ insert into month_s values (10,'October',3);
+ insert into month_s values (11,'November',3);
+ insert into month_s values (12,'December',4);
+ 
+--12) ilin ilk 6 ayini yeni id si 6 dan kitik olanlari ekrama cixartmaq ve gelme sirasina gore ardicilliqla ekrana cixartmaq
+
+select * from month_s where m_id<=6 order by M_id;
+
+--3) Qis aylarini ekrana cixartmaq
+select * from month_s where season_id=4;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

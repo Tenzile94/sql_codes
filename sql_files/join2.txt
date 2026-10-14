@@ -1,0 +1,98 @@
+create table salesman (s_id number primary key,
+                       name varchar2(30),
+                       city varchar2(15),
+                       commision number (5,2)) ;
+                       
+ insert into salesman values  (1,'Ali','Baku',5.5);
+ insert into salesman values  (2,'Leyla','Gendje',10);
+ insert into salesman values  (3,'Rena','Baku',4.5);
+ insert into salesman values  (4,'Leyla','Sumqayit',6);
+ insert into salesman values  (5,'Semed','Sheki',7);
+ insert into salesman values  (6,'Arif','Baku',10);
+ insert into salesman values  (7,'Ramal','Shirvan',7.7);
+ insert into salesman values  (8,'Ruslan','Sumqayit',8);
+ insert into salesman values  (9,'Ali','Baku',5.5);
+ insert into salesman values  (10,'Xeyale','Gendje',6);
+ 
+ select * from salesman;
+ 
+ create table customer_s(c_id number primary key,
+                      c_name varchar2(30),
+                      city varchar2(15),
+                      grade number);
+                      
+                      
+insert into customer_s values (1,'Sura','Sheki',3);
+insert into customer_s values (2,'Sura','Sheki',5);
+insert into customer_s values (3,'Lale','Baku',10);
+insert into customer_s values (4,'Ramal','Sumqayit',6);
+insert into customer_s values (5,'Samir','Gendje',4);
+insert into customer_s values (6,'Guler','Baku',11);
+insert into customer_s values (7,'Guler','Baku',9);
+insert into customer_s values (8,'Sara','Shirvan',12);
+insert into customer_s values (9,'Sara','Shirvan',9);
+insert into customer_s values (10,'Rufet','Sumqayit',7);
+                    
+                       
+                       
+create table orders (ord_no number primary key,
+                     purch_amt number(8,2),
+                     ord_date date,
+                     c_id number references customer_s(C_id),
+                     s_id number references salesman(s_id));
+  
+insert into orders values(1,100,to_date('20.05.2019','dd.mm.yyyy'),1,2);                   
+insert into orders values(2,200,to_date('11.03.2021','dd.mm.yyyy'),2,6); 
+insert into orders values(3,150,to_date('19.05.2020','dd.mm.yyyy'),3,3);                   
+insert into orders values(4,80,to_date('02.05.2021','dd.mm.yyyy'),4,5);
+insert into orders values(5,1000,to_date('27.03.2021','dd.mm.yyyy'),8,4);                   
+insert into orders values(6,97,to_date('15.09.2020','dd.mm.yyyy'),10,1);                   
+insert into orders values(7,100,to_date('20.04.2021','dd.mm.yyyy'),5,10);                   
+insert into orders values(8,100,to_date('28.11.2020','dd.mm.yyyy'),7,8);                   
+insert into orders values(9,100,to_date('17.09.2021','dd.mm.yyyy'),9,6);                   
+  select * from orders;                 
+  
+
+
+--1) Her 3 cedveli inner join-den istifade ederek birlesdirmek
+
+select from  salesman s inner join orders o on s.s_id= o.s_id
+ inner join customer_s c on o.c_id=c.c_id;
+
+--2)musteri adi ,satici adi, ord_date ekrana cixartmaq
+select c_name,name s_name,ord_date from
+ salesman s inner join orders o on s.s_id= o.s_id
+ inner join customer_s c on o.c_id=c.c_id;
+
+--3)saticinin ve musterinin eyni seherlerde yasadigi serti odenen musteri adlarini, satici
+--adini ve seherleri ekarana cixartmaq
+select c_name,name s_name,city from salesman natural join customer_s;
+
+select c_name,name s_name,s.city from
+ salesman s inner join customer_s c on s.city=c.city;
+
+--4)her saticinin aldigi umumi sifaris sayini ve satici adini ekrana cixartmaq
+select name,count(commision) from salesman s inner join
+orders o on s.s_id=o.s_id inner join customer_s  c on o.c_id=c.c_id group by name;
+
+--5) Outer Joinin her 3 tipinden istifade etmek
+
+select name,s.city,ord_date from salesman s left join
+orders o on s.s_id= o.s_id left join customer_s c on o.c_id=c.c_id;
+                 
+
+select name,s.city,ord_date from salesman s right join
+orders o on s.s_id= o.s_id right join customer_s c on o.c_id=c.c_id;
+                 
+
+
+select name,s.city,ord_date from salesman s full join
+orders o on s.s_id= o.s_id full join customer_s c on o.c_id=c.c_id;
+                 
+
+
+
+
+
+
+

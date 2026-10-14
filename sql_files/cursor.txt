@@ -1,0 +1,89 @@
+select * from dual;
+declare
+a number;
+begin
+  select nvl(t.id,0) into a from term_deposit_contract t where t.id=1;
+  if sql%notfound--a=0
+    then dbms_output.put_line(a);
+    end if;
+  end;
+ 
+ 
+ 
+  --implicit
+  --explicit
+ 
+  --implicit
+  --sql%notfound
+  --sql%found
+  --sql%rowcount
+  --sql%isopen
+  select * from aylar;
+  declare
+  a1 varchar2(20);
+  begin
+    select a.ay_ad into a1 from aylar  a where a.ay_id=1;
+    if sql%notfound=true
+      then dbms_output.put_line('true sql%notfound');
+        else dbms_output.put_line('false sql%notfound');
+          end if;          
+     if sql%found--=true
+      then dbms_output.put_line('true sql%found');
+        else dbms_output.put_line('false sql%found');
+          end if;
+       dbms_output.put_line( sql%rowcount);
+      if sql%isopen--=true
+      then dbms_output.put_line('true sql%isopen');
+        else dbms_output.put_line('false sql%isopen');
+          end if;              
+     update aylar a set a.fesi_id=3 where a.fesi_id=1;    
+      if sql%notfound--=true
+      then dbms_output.put_line('true sql%notfound');
+        else dbms_output.put_line('false sql%notfound');
+          end if;    
+     if sql%found--=true
+      then dbms_output.put_line('true sql%found');
+        else dbms_output.put_line('false sql%found');
+          end if;
+         dbms_output.put_line(sql%rowcount);            
+      if sql%isopen--=true
+     then
+         dbms_output.put_line('true sql%isopen');
+        else dbms_output.put_line('false sql%isopen');
+          end if;    
+         
+         
+           
+    end;
+   
+    se
+    declare
+    cursor c_cur is select * from aylar;
+    cursor_res aylar%rowtype;
+    begin
+      open c_cur;
+      loop
+      fetch c_cur into cursor_res;
+     
+      dbms_output.put_line(cursor_res.fesi_id);
+     
+           if c_cur%notfound--=true
+      then dbms_output.put_line('true sql%notfound');
+        else dbms_output.put_line('false sql%notfound');
+          end if;    
+     if c_cur%found--=true
+      then dbms_output.put_line('true sql%found');
+        else dbms_output.put_line('false sql%found');
+          end if;
+         dbms_output.put_line(sql%rowcount);            
+      if c_cur%isopen--=true
+     then
+         dbms_output.put_line('true sql%isopen');
+        else dbms_output.put_line('false sql%isopen');
+          end if;
+      exit when c_cur%notfound;
+     
+      end loop;
+     
+      close c_cur;
+      end;

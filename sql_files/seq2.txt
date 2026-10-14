@@ -1,0 +1,69 @@
+--1) iki table yaratmaq   Biri anbar (anbar_id,name)
+create table anbar1(anbar_id number primary key,
+                   Name varchar2(30));
+                   
+--2) mallar tablesi yaratmaq (mal_id,name,anb_id,satis_qiymeti,alis_qiymeti,sayi) sutunlari olsun
+create table mallar_n (mal_id number primary key,
+                     anbar_id number references anbar1(anbar_id),
+                     satis_qiymeti number,
+                     alis_qiymeti number,
+                     sayi number);
+                     
+                     alter table mallar_n add name varchar2(15);
+                     
+                     
+--Faktura tablesi yaratmaq (Fak_ID,Anb_id,Mal_id,faktura date ,total )  sutunlari olsun
+create table faktura2 (Fak_id number,
+                      Anb_id number references anbar1(anbar_id),
+                      Mal_id number references mallar_n(mal_id),
+                      Faktura_date date,
+                      total number);
+
+
+--Pk sutunlarin her birine sequenceleri tetbiq ederek  insert etmek
+/*her tableye 10 eded row daxil etmek daxil edilen melumatlar arasinda
+faktura tablesinde tekrar mallarin id si olsun yeni faktura tablesinde tekrarlanan mal id ve  anbar
+idler olsun*/
+drop sequence s_anb2;
+delete anbar1; 
+       create sequence s_anb2
+       minvalue 1
+       increment by 1
+       maxvalue 10
+       cache 20;
+ insert into anbar1 values (s_anb2.nextval,'AFDGD');
+insert into anbar1 values (s_anb2.nextval,'HJFTVMJHK');
+insert into anbar1 values (s_anb2.nextval,'DFJBKJN');
+insert into anbar1 values (s_anb2.nextval,'TYJ<NC');
+insert into anbar1 values (s_anb2.nextval,'VCTYGK');
+insert into anbar1 values (s_anb2.nextval,'EETFTY');
+insert into anbar1 values (s_anb2.nextval,'RGGVU');
+insert into anbar1 values (s_anb2.nextval,'YTBHIHF');
+insert into anbar1 values (s_anb2.nextval,'VCRDYGI');
+insert into anbar1 values (s_anb2.nextval,'GFGUUHKJH');
+
+ select * from anbar1;   
+ 
+ create sequence s_maln
+minvalue 1
+increment by 1
+maxvalue 20
+cache 20;
+
+insert into mallar_n values (s_maln.nextval,1,3,2,50,'Sud');
+insert into mallar_n values (s_maln.nextval,3,2,1,70,'Qatiq');
+insert into mallar_n values (s_maln.nextval,5,4,3,60,'Sampun');
+insert into mallar_n values (s_maln.nextval,9,2,1,100,'Sabun');
+insert into mallar_n values (s_maln.nextval,4,8,6,'Sac boyasi');
+insert into mallar_n values (s_maln.nextval,6,3,1,85,'Daraq');
+insert into mallar_n values (s_maln.nextval,2,5,3,30,'Su qabi');
+insert into mallar_n values (s_maln.nextval,7,4,3,75,'Kasa');
+insert into mallar_n values (s_maln.nextval,10,3,2,150,'Chips');
+insert into mallar_n values (s_maln.nextval,8,2,1,300,'Bonaqua');
+select*from mallar_n;
+
+ 
+    
+       
+       
+       

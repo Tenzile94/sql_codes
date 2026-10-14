@@ -1,0 +1,170 @@
+                             
+/*1) Emekhaqqi cedveli yaratmaq
+ID -pk,
+Isci adi ,
+Soyad,
+Emekhaqqi,
+Dateofbirth adli sutunlar olmali
+10 isci haqqinda melumat insert olunmali
+Butun select sorgularda Column alias istifade olunmali
+Aynur Eliyeva 570 maas
+Surac Kamilov 800 maas
+Sona Eliyeva 300 maas
+Tural Rzaxanov 600 maas
+Veli Ramaldanov 900 maas
+Yasemen Ceferova 2000 maas almasi insert olunmali Elave sutunlari da ozunuzqeyd edersiniz*/
+create table Workers_Salary(id number primary key,
+                             Name varchar2(20),
+                             Surname varchar2(30),
+                             Salary number,
+                             Date_of_birth date);
+                             
+
+insert into Workers_Salary values (1,'Aynur',' Eliyeva',570,to_date('12.04.1987','dd,mm,yyyy'));
+insert into Workers_Salary values (2,'Arif','Quliyev',690,to_date('02.11.1990','dd,mm,yyyy'));
+insert into Workers_Salary values (3,'Surac',' Kamilov',800,to_date('22.10.1991','dd,mm,yyyy'));
+insert into Workers_Salary values (4,'Rena',' Veliyeva',900,to_date('15.03.1982','dd,mm,yyyy'));
+insert into Workers_Salary values (5,'Sona',' Eliyeva',300,to_date('09.04.1969','dd,mm,yyyy'));
+insert into Workers_Salary values (6,'Tural',' Rzaxanov',600,to_date('17.09.1993','dd,mm,yyyy'));
+insert into Workers_Salary values (7,'Sevil','Rehimova',350,to_date('12.04.1987','dd,mm,yyyy'));
+insert into Workers_Salary values (8,'Veli','Ramaldanov ',900,to_date('10.03.1971','dd,mm,yyyy'));
+insert into Workers_Salary values (9,'Yasemen','Ceferova',2000,to_date('01.01.1983','dd,mm,yyyy'));
+insert into Workers_Salary values (10,'Seymur','Babayev',800,to_date('10.05.1977','dd,mm,yyyy'));
+insert 
+select * from Workers_salary w_s;
+
+--2) En cox maas alan iscinin adini ekrana cixartmaq
+select * from workers_salary w_s order by salary  desc fetch next 1 row only;
+
+--3) En az maas alan 3 iscinin adini ve soyadini ekrana cixartmaq
+select name n,surname s_n from workers_salary w_s order by salary fetch next 3 rows with ties;
+select name n, surname s_n from workers_salary  order by salary desc offset 7 rows ;
+
+--4)Adinda a herfi olan maasi 500 den cox iscilerin adini ,soyadini ,maasini ekrana cixartmaq ve siyahini maasa gore azdan coxa dogru duzmek
+
+select name n,surname s_n,salary s from workers_salary where name like '%a%' and salary>500 order by s ;
+
+--5)Adlari ekrana cixartmaq ve coxdan aza dogru siralamaq
+select name n from workers_salary order by n desc;
+
+--6) soyadlari ve maaslari ekrana cixartmaq ve adlara gore azalan sira ile duzmek
+select surname s_n, salary s from workers_salary order by name desc;
+
+--7)adinin ilk herfi V olan iscinin maasini 30 faiz artirmaq
+update workers_salary set salary=salary+(salary*30)/100 where name like 'V%';
+select w.name,w.surname,w.salary from workers_salary w;
+
+--8) adinda e herfi olub ID si 10 dan kicik olan iscilerin adini azdan coxa ,maasini coxdan aza duzerek ekrana cixartmaq
+select name n,salary s from workers_salary where name like '%n%' and id<10 order by n ,s desc; --??
+select name n,salary s from workers_salary where name like '%n%'  and id<10 order by s desc;
+
+--9) Maasi null dan ferqli olan ve ya 1500 den cox olan iscinin maasini 100 azn artirmaq
+update workers_salary set salary=salary+100 where salary is not null or salary>1500;
+
+select * from workers_salary;
+--10)Reqemlee order bydan istifade ederek  maasa gore coxdan aza butun isciler haqqinda infolari cixartmaq
+select * from workers_salary order by 4 desc;  --??reqem
+
+--11)maasi 570,800,700 den ferqli ve ya adinin sonuncu simvolu c herfi olan iscilerin adini ve soyadlarini ekrana cixartmaq ,
+--adi ve soyadi reqemlerle olan order bydan istifade ederek coxdan aza dogru siralamaq
+
+select name n,surname s_n from workers_salary where salary not in  (570,800,700) or name like '%c%' order by 1,2 ; 
+select name n,surname s_n from workers_salary where salary not in  (570,800,700) or name like '%c%' order by 1,2 desc ; 
+select name n,surname s_n from workers_salary where salary not in  (570,800,700) or name like '%c%'  ; 
+
+--12) Maasi 200 ve 500 arasinda olmayan butun iscilerin maasinin 10 faizini azdan coxa duzerek ekrana cixartmaq
+select salary from workers_salary where salary not between 200 and 500 order by salary fetch next 10 percent rows only ;
+savepoint A;
+--13)adinda iki a simvolu olan iscilerin maasini 35 Azn azaltmaq
+update workers_salary set salary =salary-(salary*35)/100 where name like '%e%e%';
+select *from workers_salary;
+rollback to savepoint A;
+
+--14) adinda a simvoku olan ve ya u simvolu olna iscilerden maasi en cox olnai ekrana cixartmaq
+
+select * from workers_salary where  (name like '%a%' or name like '%u%') order by salary desc fetch next 1 row only ; 
+
+--15)Adinda 4 simvol olan iscilerin maasinin uzerine 100 azn gelmekle ekrana cixartmaq(Select emridir Update yox)
+select W.id,W.name,W.surname,W.salary,W.salary+100 increase, W.date_of_birth from workers_salary W where name like '____';
+
+--16)Maasi 200 den boyuk ve ya soyadinin sonu v herfi ile biten butun iscilerin adini,soyadini,maasini 
+--ekrana cixartmaq ,reqemlerle order bydan istifade ederek iscinin maasini ,adini ,soyadini azdan coxa duzmek
+select name,surname,salary from workers_salary where salary>200 or surname like '%v%' order by 3,1,2;
+
+--17)adi null olmayan ve maasi 100 den ferqli olan butun iscilerin maasini 2 defe artirmaq Ve maaslari ekrana cixardaraq azdan coxa dogru duzmek
+
+select W.salary S,W.salary*2 increase from workers_salary W where name is not null or salary!=100 order by S ;
+
+--18)Date sutununu,musteri adini ekrana cixartmaq ve date coxdan aza duzmek
+select date_of_birth D, name N from workers_salary order by D desc;
+
+--19) date sutunundaki melumat sysdateden kicik olan ve maasi 1000  ve 2000 intervalinda olmayan butun iscilerin siyahisini 
+--ekrana cixartmaq ve date sutununa gore azdan coxa siralamaq
+select *from workers_salary where date_of_birth<sysdate and salary not between 1000 and 2000 order by date_of_birth;
+
+--20) adinda r herfi olan iscilerin date sutunundaki melumati 10 gun artiraraq yenilemek
+--Update emek_haqqi set date=date+10 where ozunuz yazirsiz )
+savepoint D;
+update workers_salary set date_of_birth=date_of_birth+10  where name like '%r%';--duzgun tarix verme
+select * from workers_salary;
+
+update workers_salary set salary=salary+(salary*10)/100 where salary<600;
+
+update workers_salary set date_of_birth=date_of_birth+10 where extract(year from date_of_birth )<1990; --?? 
+rollback to savepoint D;
+
+--21)Date sysdate ve 01.01.2018 intervalinda olan  butun iscilerin date sutununu 1 gun azaldaraq yenilemek */
+
+update workers_salary set date_of_birth=date_of_birth-1 where date_of_birth between to_date('01.01.2018','dd.mm.yyyy') and trunc(sysdate);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+_';
+
+
+
+
+
+
+
+
+

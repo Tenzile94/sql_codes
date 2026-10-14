@@ -1,0 +1,256 @@
+--1) iki table yaratmaq   Biri anbar (anbar_id,name)
+create table anbar(anbar_id number,
+                   Name varchar2(30));
+--2) mallar tablesi yaratmaq (mal_id,name,anb_id,satis_qiymeti,alis_qiymeti,sayi) sutunlari olsun
+create table mallar1 (mal_id number,
+                     anbar_id number,
+                     satis_qiymeti number,
+                     alis_qiymeti number,
+                     sayi number);
+ select * from anbar;  
+ select * from mallar1; 
+ select * from faktura1;                 
+alter table mallar1 add  name varchar2(20);                     
+
+--Faktura tablesi yaratmaq (Fak_ID,Anb_id,Mal_id,faktura date ,total )  sutunlari olsun
+drop table faktura1;
+
+  
+ --FK ni ve PK ni tableleri inceledikden sonrahansi sutunun FK hansinin PK olacagini  teyin et
+                     
+ alter table anbar modify anbar_id primary key;
+ alter table mallar1  modify  mal_id primary key;
+ alter table mallar1  modify anbar_id references anbar(anbar_id);
+ alter table faktura1 modify anb_id references anbar(anbar_id);
+ alter table faktura1 modify fak_id primary key;
+ alter table  faktura1 modify Mal_id references mallar1( mal_id);
+ alter table mallar1 modify satis_qiymeti number(5,2);
+ alter table mallar1 modify alis_qiymeti number(5,2);
+
+grant create sequence to Analytic;
+   
+ --Pk sutunlarin her birine sequenceleri tetbiq ederek  insert etmek
+       create sequence s_anb1
+       minvalue 1
+       increment by 1
+       maxvalue 10
+       cache 20;
+delete anbar;
+insert into anbar values (s_anb1.nextval,'AFDGD');
+insert into anbar values (s_anb1.nextval,'HJFTVMJHK');
+insert into anbar values (s_anb1.nextval,'DFJBKJN');
+insert into anbar values (s_anb1.nextval,'TYJ<NC');
+insert into anbar values (s_anb1.nextval,'VCTYGK');
+insert into anbar values (s_anb1.nextval,'EETFTY');
+insert into anbar values (s_anb1.nextval,'RGGVU');
+insert into anbar values (s_anb1.nextval,'YTBHIHF');
+insert into anbar values (s_anb1.nextval,'VCRDYGI');
+insert into anbar values (s_anb1.nextval,'GFGUUHKJH');
+ select * from anbar;
+ 
+ drop sequence s_mal;
+delete mallar1;
+create sequence s_mal
+minvalue 1
+increment by 1
+maxvalue 20
+cache 20;
+insert into mallar1 values (s_mal.nextval,1,3,2,50,'Sud');
+insert into mallar1 values (s_mal.nextval,1,2,1,70,'Qatiq');
+insert into mallar1 values (s_mal.nextval,2,4,3,60,'Sampun');
+insert into mallar1 values (s_mal.nextval,2,2,1,100,'Sabun');
+insert into mallar1 values (s_mal.nextval,2,8.5,6,80,'Sac boyasi');
+insert into mallar1 values (s_mal.nextval,3,3.5,1.5,85,'Daraq');
+insert into mallar1 values (s_mal.nextval,4,5,3.5,30,'Su qabi');
+insert into mallar1 values (s_mal.nextval,4,3,1.5,75,'Kasa');
+insert into mallar1 values (s_mal.nextval,5,3.5,1.7,150,'Chips');
+insert into mallar1 values (s_mal.nextval,6,0.7,0.5,300,'Bonaqua');
+insert into mallar1 values (s_mal.nextval,6,2.5,1.7,200,'Cola');
+insert into mallar1 values (s_mal.nextval,7,10,8,45,'Hbhduh');
+insert into mallar1 values (s_mal.nextval,8,8,6.5,30,'Gbsdhnhb');
+insert into mallar1 values (s_mal.nextval,9,11,9.2,15,'Adgfnv');
+insert into mallar1 values (s_mal.nextval,10,4.5,2.7,90,'Rdfhfjg');
+insert into mallar1 values (s_mal.nextval,9,12,10,70,'Qgfhgjg');
+insert into mallar1 values (s_mal.nextval,8,1.3,0.9,100,'Zhguyvhtt');
+insert into mallar1 values (s_mal.nextval,10,6.2,5,50,'Vfuyuj');
+insert into mallar1 values (s_mal.nextval,9,15,12,20,'Mygudug');
+insert into mallar1 values (s_mal.nextval,1,3,1.7,200,'Chips');
+
+
+ select *from mallar1;
+ 
+  select * from user_constraints where TABLE_NAME='FAKTURA1';
+alter table faktura1 drop constraint SYS_C008814;
+
+drop sequence s_fak;
+create sequence s_fak
+minvalue 1
+increment by 1
+maxvalue 20;
+create table faktura1 (Id number,
+                      Fak_id number,
+                      Anb_id number,
+                      Mal_id number,
+                      Faktura_date date,
+                      total number);
+                      delete  faktura1;
+insert into faktura1 values(s_fak.nextval,1,1,1,to_date('20.05.2021','dd.mm.yyyy'),
+(select alis_qiymeti* sayi  from mallar1 where name='Sud'));
+
+insert into faktura1 values(s_fak.nextval,1,(select a.anbar_id from anbar a inner join mallar1 m on 
+a.anbar_id= m.anbar_id where mal_id=2),2,to_date('20.05.2021','dd.mm.yyyy'),
+(select alis_qiymeti* sayi  from mallar1 where mal_id=2));
+
+insert into faktura1 values(s_fak.nextval,1,(select a.anbar_id from anbar a inner join mallar1 m on 
+a.anbar_id= m.anbar_id where mal_id=3),3,to_date('20.05.2021','dd.mm.yyyy'),
+(select alis_qiymeti* sayi  from mallar1 where mal_id=3));
+
+insert into faktura1 values(s_fak.nextval,2,(select a.anbar_id from anbar a inner join mallar1 m on 
+a.anbar_id= m.anbar_id where mal_id=4),4,to_date('15.02.2021','dd.mm.yyyy'),
+(select alis_qiymeti* sayi  from mallar1 where mal_id=4));
+
+insert into faktura1 values(s_fak.nextval,2,(select a.anbar_id from anbar a inner join mallar1 m on 
+a.anbar_id= m.anbar_id where mal_id=5),5,to_date('15.02.2021','dd.mm.yyyy'),
+(select alis_qiymeti* sayi  from mallar1 where mal_id=5));
+
+insert into faktura1 values(s_fak.nextval,2,(select a.anbar_id from anbar a inner join mallar1 m on 
+a.anbar_id= m.anbar_id where mal_id=6),6,to_date('15.02.2021','dd.mm.yyyy'),
+(select alis_qiymeti* sayi  from mallar1 where mal_id=6));
+
+insert into faktura1 values(s_fak.nextval,3,(select a.anbar_id from anbar a inner join mallar1 m on 
+a.anbar_id= m.anbar_id where mal_id=7),7,to_date('10.12.2020','dd.mm.yyyy'),
+(select alis_qiymeti* sayi  from mallar1 where mal_id=7));
+
+insert into faktura1 values(s_fak.nextval,3,(select a.anbar_id from anbar a inner join mallar1 m on 
+a.anbar_id= m.anbar_id where mal_id=8),8,to_date('10.12.2020','dd.mm.yyyy'),
+(select alis_qiymeti* sayi  from mallar1 where mal_id=8));
+
+insert into faktura1 values(s_fak.nextval,3,(select a.anbar_id from anbar a inner join mallar1 m on 
+a.anbar_id= m.anbar_id where mal_id=9),9,to_date('10.12.2020','dd.mm.yyyy'),
+(select alis_qiymeti* sayi  from mallar1 where mal_id=9));
+
+insert into faktura1 values(s_fak.nextval,3,(select a.anbar_id from anbar a inner join mallar1 m on 
+a.anbar_id= m.anbar_id where mal_id=10),10,to_date('10.12.2020','dd.mm.yyyy'),
+(select alis_qiymeti* sayi  from mallar1 where mal_id=10));
+
+insert into faktura1 values(s_fak.nextval,2,(select a.anbar_id from anbar a inner join mallar1 m on 
+a.anbar_id= m.anbar_id where mal_id=11),11,to_date('15.02.2021','dd.mm.yyyy'),
+(select alis_qiymeti* sayi  from mallar1 where mal_id=11));
+
+insert into faktura1 values(s_fak.nextval,4,(select a.anbar_id from anbar a inner join mallar1 m on 
+a.anbar_id= m.anbar_id where mal_id=12),12,to_date('01.01.2021','dd.mm.yyyy'),
+(select alis_qiymeti* sayi  from mallar1 where mal_id=12));
+
+insert into faktura1 values(s_fak.nextval,4,(select a.anbar_id from anbar a inner join mallar1 m on 
+a.anbar_id= m.anbar_id where mal_id=13),13,to_date('01.01.2021','dd.mm.yyyy'),
+(select alis_qiymeti* sayi  from mallar1 where mal_id=13));
+
+insert into faktura1 values(s_fak.nextval,4,(select a.anbar_id from anbar a inner join mallar1 m on 
+a.anbar_id= m.anbar_id where mal_id=14),14,to_date('01.01.2021','dd.mm.yyyy'),
+(select alis_qiymeti* sayi  from mallar1 where mal_id=14));
+
+insert into faktura1 values(s_fak.nextval,4,(select a.anbar_id from anbar a inner join mallar1 m on 
+a.anbar_id= m.anbar_id where mal_id=20),20,to_date('01.01.2021','dd.mm.yyyy'),
+(select alis_qiymeti* sayi  from mallar1 where mal_id=20));
+
+insert into faktura1 values(s_fak.nextval,4,(select a.anbar_id from anbar a inner join mallar1 m on 
+a.anbar_id= m.anbar_id where mal_id=17),17,to_date('01.01.2021','dd.mm.yyyy'),
+(select alis_qiymeti* sayi  from mallar1 where mal_id=17));
+
+insert into faktura1 values(s_fak.nextval,5,(select a.anbar_id from anbar a inner join mallar1 m on 
+a.anbar_id= m.anbar_id where mal_id=16),16,to_date('11.11.2019','dd.mm.yyyy'),
+(select alis_qiymeti* sayi  from mallar1 where mal_id=16));
+
+insert into faktura1 values(s_fak.nextval,5,(select a.anbar_id from anbar a inner join mallar1 m on 
+a.anbar_id= m.anbar_id where mal_id=15),15,to_date('11.11.2019','dd.mm.yyyy'),
+(select alis_qiymeti* sayi  from mallar1 where mal_id=15));
+
+insert into faktura1 values(s_fak.nextval,5,(select a.anbar_id from anbar a inner join mallar1 m on 
+a.anbar_id= m.anbar_id where mal_id=19),19,to_date('11.11.2019','dd.mm.yyyy'),
+(select alis_qiymeti* sayi  from mallar1 where mal_id=19));
+
+insert into faktura1 values(s_fak.nextval,5,(select a.anbar_id from anbar a inner join mallar1 m on 
+a.anbar_id= m.anbar_id where mal_id=18),18,to_date('11.11.2019','dd.mm.yyyy'),
+(select alis_qiymeti* sayi  from mallar1 where mal_id=18));
+
+select * from faktura1;
+/*her tableye 10 eded row daxil etmek daxil edilen melumatlar arasinda
+faktura tablesinde tekrar mallarin id si olsun yeni faktura tablesinde tekrarlanan mal id ve  anbar
+idler olsun*/
+--3)  fakturada yazilan  malin_adini    ve sayini ekrana cixaracaq sorgu yazmaq
+select m.name,m.sayi from faktura1 f group by f.fak_id) from mallar1 m;
+
+--4)  en az totala malik fakturani ekrana cixartmaq yeni ekrana mal adi ,  anbar id ve total sum
+--cixsin en az olani
+
+select f.mal_id,f.anb_id,sum(f.total) from faktura1 f group by f.fak_id,f.mal_id,f.anb_id 
+order by sum(f.total) fetch next  1 rows only; 
+
+--5)anbar name ve mehsul name ekrana cixartmaq ve ilk 4 setiri ekrana cixarilmasi
+create view w_mn as 
+select a.name ,(select m.name from mallar1 m inner join anbar on m.anbar_id=a.anbar_id) n from anbar a
+ group by a.anbar_id,a.name;
+
+--6) anbar adi , mal adi ve malin sayini ozunde saxlayacaq view yaratmaq ve view uzerinde butun
+--DML emeliyyatlkarini tetbiq etmek hansinin alinib alinmamasini arasdirmaq
+select a.name,(select m.name from mallar1 m inner join anbar a on 
+m.anbar_id=a.anbar_id group by m.mal_id,m.name)  from anbar a ;
+
+
+
+
+
+
+
+
+
+--1)City tablesini yaratmaq city_id pk olsun,pk ya melumatlari sequence ile daxil etmek ,sequence
+--100 den baslasin ve 2 addimla irelilesin, city_pk sutunu maksimum 130 ededini ala,city_name
+--,country_id constraint olmali
+
+
+create table country(Id number primary key,
+                     C_name varchar2(30));
+                     
+-- Country_id sutununa sequence yaradaraq insert etmek ,sequence  minimum value
+--maximumvalue,startwith,cycle ve ya nocycle kimi proportileri ozunuzden vermeil
+                    
+                     create sequence s_ctry
+                     minvalue 1
+                     increment by 2
+                     maxvalue 25
+                     nocycle;
+                     
+ insert into country values(s_ctry.nextval,'Azerbaijan');
+ insert into country values(s_ctry.nextval,'Spain');
+ insert into country values(s_ctry.nextval,'Russia');
+  insert into country values(s_ctry.nextval,'Ozbekistan');
+ insert into country values(s_ctry.nextval,'Georgia');
+  insert into country values(s_ctry.nextval,'Turkey');
+  select * from country;
+                  
+create table city (city_id number primary key,
+                   city_name varchar2(30),
+                   country_id number references country(Id));
+                   
+                   
+                   create sequence s_ty
+                   start with 100
+                   increment by 2
+                   maxvalue 130;
+                   
+insert into city values(s_ty.nextval,'Barcelona',(select id from country where c_name='Spain'));
+insert into city values(s_ty.nextval,'Baku',(select id from country where c_name='Azerbaijan'));
+insert into city values(s_ty.nextval,'Moskva',(select id from country where c_name='Russia'));
+insert into city values(s_ty.nextval,'Antalya',(select id from country where c_name='Turkey'));
+insert into city values(s_ty.nextval,'Tashkent',(select id from country where c_name='Ozbekistan'));
+insert into city values(s_ty.nextval,'Batumi',(select id from country where c_name='Georgia'));
+
+select * from city;
+                
+--2)Country tablesini yaratmaq
+--Country_id   olsun,country_name  teyin etmelisiniz.
+
+
+
+
